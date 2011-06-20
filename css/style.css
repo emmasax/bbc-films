@@ -98,8 +98,8 @@ background : rgb(255,255,255) /* url(../img/tmp/grid.png) repeat-y 50% 0 */; }
 
 body { 
 margin : 0 auto;
-padding : 24px 0;
-width : 90% /* 252px */;
+padding : 0;
+width : 760px;
 font : 100%/1.4 Cambria, Georgia, Times, "Times New Roman";
 color : rgb(40,40,40); 
 background-color : transparent; }
@@ -391,6 +391,18 @@ list-style-type : none; }
 
 #goog-fixurl input  {
 margin-bottom : 1.5em; }
+
+header h1
+{
+	float: left;
+}
+
+header select
+{
+	float: right;
+	font-size: 14px;
+	margin-top: 5px;
+}
 
 .film-shelf li p
 {
