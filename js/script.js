@@ -6,22 +6,20 @@ $(function() {
 
 		$('.film-shelf')
 			.find('.film-' + pid)
-				.append('<ul class="rating"><li><span class="barchart"><img src="img/bar.png" height="10" width="' + val.ratings.critics_score + '%" /></span><span>Critics rating: <b>'+val.ratings.critics_rating+ '</b></span></li></ul>')
+				.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
 				.removeClass('no-img')
-				.prepend('<img src="'+val.posters.profile+'" alt="" />')
-			.find('.rating')
-				.append('<li><span class="barchart"><img src="img/bar.png" height="10" width="' + val.ratings.audience_score + '%" /></span><span>Audience rating: <b>'+val.ratings.audience_rating+ '</b></span></li>').end()
+			.find('a:first')
+				.html('<img src="'+val.posters.profile+'" alt="" />')
 			.find('h2')	
 				.append(' <span>('+val.year+')</span>');
 
-		if(val.alternate_ids) {
+		/*if(val.alternate_ids) {
 			$('.film-shelf').find('.film-' + pid + ' .info:last')
 				.after('<p class="info"><a href="http://www.imdb.com/title/tt'+val.alternate_ids.imdb+'">Read more about <i>\''+name+'\'</i> on IMDb</a></p>');
-		}
+		}*/
 	};
 	
 	var getFilmDetails = function(name, pid) {
-		//console.log('getting film: '+ name);
 		$.ajax({
 			url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+name,
 			dataType: "jsonp",
@@ -41,7 +39,7 @@ $(function() {
 		});
 	};	
 	
-	var outputFilms = function(data, type) {
+	var outputFilmSleeves = function(data, type) {
 		if(data.length == 0) {
 			$('div[role=main]').append('<p class="film-shelf">No films</p>');
 		}
@@ -60,17 +58,19 @@ $(function() {
 
 				if(!filmAlreadyRendered) {
 					listOfIds.push(uniqueId);
-					filmShelf.append('<li class="film-' + uniqueId + ' ' + serviceId + ' no-img"></li>');
+					filmShelf.append('<li class="film-' + uniqueId + ' no-img"></li>');
 					var film = filmShelf.find('.film-' + uniqueId);
-					film.append('<h2><a href="http://bbc.co.uk/programmes/'+val.programme.pid+'">' + val.programme.title + '</a></h2>');
+					film.append('<a href="http://bbc.co.uk/programmes/'+val.programme.pid+'"></a>')
+						.append('<h2>' + val.programme.title + '</h2>');
+						
 					var filmHeader = filmShelf.find('.film-' + uniqueId + ' h2');
 
 					if(val.start)
-						filmHeader.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' (' + $.format.date(val.start, "HH:mm") + ')</time>');
+						filmHeader.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm") + '</time>');
 					else
 						filmHeader.after('<time><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
 
-					film.append('<p class="info">' + val.programme.short_synopsis + '</p>');
+					//film.append('<p class="info">' + val.programme.short_synopsis + '</p>');
 
 					if(serviceId != 'bbc_hd') {
 						getFilmDetails(filmTitle, uniqueId);
@@ -82,9 +82,9 @@ $(function() {
 							if(data.programme.long_synopsis) synopsis = data.programme.long_synopsis;
 							else if(data.programme.medium_synopsis) synopsis = data.programme.medium_synopsis;
 							else if(data.programme.short_synopsis) synopsis = data.programme.short_synopsis;
-							film
-								.append('<p class="info">' + synopsis + '</p>')
-								.prepend('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />');
+							film.find('a:first')
+								//.append('<p class="info">' + synopsis + '</p>')
+								.html('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />');
 						});
 					}
 				}
@@ -92,7 +92,7 @@ $(function() {
 					// just add in the new time
 					if(val.start) {
 						filmShelf.find('.film-' + uniqueId + ' time:last')
-							.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' (' + $.format.date(val.start, "HH:mm") + ')</time>');
+							.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm") + '</time>');
 					}
 				}
 			});
@@ -107,16 +107,17 @@ $(function() {
 			$.getJSON(url, function(data) {
 				filmData = data.broadcasts;
 				if(type == 'episodes') filmData = data.episodes;
-				outputFilms(filmData);
+				outputFilmSleeves(filmData);
 				localStorage.setItem(selection, JSON.stringify(filmData));
 			});			
 		}
 		else {
-			outputFilms($.parseJSON(filmData));
+			outputFilmSleeves($.parseJSON(filmData));
 		}
 	};
 
-	var selection = $('header option:selected').val();
+	//var selection = $('header option:selected').val();
+	var selection = 'sevendays';
 	
 	$('header select').change(function() {
 		var selected = $(this).find('option:selected');
@@ -125,19 +126,15 @@ $(function() {
 		$('.film-shelf').remove();
 		switch(selection) {
 			case 'now':
-				$('h1').text('BBC films on iPlayer');
 				getData('http://www.bbc.co.uk/programmes/formats/films/player/episodes.json', 'episodes');
 				break;
 			case 'today':
-				$('h1').text('BBC films today');
 				getData('http://www.bbc.co.uk/tv/programmes/formats/films/schedules/today.json', 'broadcasts');
 				break;
 			case 'tomorrow':
-				$('h1').text('BBC films tomorrow');
 				getData('http://www.bbc.co.uk/tv/programmes/formats/films/schedules/tomorrow.json', 'broadcasts');
 				break;
 			default:
-				$('h1').text('BBC films in the next seven days');
 				selected.attr('selected', true);
 				getData('http://www.bbc.co.uk/tv/programmes/formats/films/schedules/upcoming.json', 'broadcasts');
 		}

@@ -6,15 +6,32 @@
 .film-shelf li
 {
 	margin-bottom: 20px;
-	min-height: 320px;
-	min-width: 372px;
-	width: 372px;
+	margin-right: 15px;
+	min-height: 330px;
+	min-width: 140px;
+	width: 140px;
 }
 
-.film-shelf li:nth-child(odd)
+.film-shelf li:nth-child(6),
+.film-shelf li:nth-child(11),
+.film-shelf li:nth-child(16),
+.film-shelf li:nth-child(21)
 {
-	margin-right: 20px;
 	clear: left;
+}
+.film-shelf li:nth-child(5),
+.film-shelf li:nth-child(10),
+.film-shelf li:nth-child(15),
+.film-shelf li:nth-child(20)
+{
+	margin-right: 0;
+}
+
+.film-shelf li a img
+{
+	display: block;
+	max-width: 140px;
+	min-width: 140px;
 }
 
 .film-shelf .bbc_one,
@@ -24,22 +41,6 @@
 .film-shelf .iplayer,
 .film-shelf .bbc_hd
 {
-	background-position: 295px 10px;
-}
-
-.film-shelf .rating
-{
-	margin: 0;
-	overflow: hidden;
-}
-
-.film-shelf .rating li
-{
-	padding-bottom: 10px;
-	margin-right: 0;
-}
-
-.film-shelf .rating li span.barchart
-{
-	width: 350px;
+	/*background-position: 295px 10px;*/
+	background-image: none;
 }
