@@ -13,10 +13,10 @@ $(function() {
 			.find('h2')	
 				.append(' <span>('+val.year+')</span>');
 
-		/*if(val.alternate_ids) {
+		if(val.alternate_ids) {
 			$('.film-shelf').find('.film-' + pid + ' .info:last')
 				.after('<p class="info"><a href="http://www.imdb.com/title/tt'+val.alternate_ids.imdb+'">Read more about <i>\''+name+'\'</i> on IMDb</a></p>');
-		}*/
+		}
 	};
 	
 	var getFilmDetails = function(name, pid) {
@@ -58,10 +58,11 @@ $(function() {
 
 				if(!filmAlreadyRendered) {
 					listOfIds.push(uniqueId);
-					filmShelf.append('<li class="film-' + uniqueId + ' no-img"></li>');
+					filmShelf.append('<li class="film-' + uniqueId + ' no-img" data-id="'+val.programme.pid+'"></li>');
 					var film = filmShelf.find('.film-' + uniqueId);
-					film.append('<a href="http://bbc.co.uk/programmes/'+val.programme.pid+'"></a>')
-						.append('<h2>' + val.programme.title + '</h2>');
+					film.append('<a class="header-img" href="http://bbc.co.uk/programmes/'+val.programme.pid+'"></a>')
+						.append('<h2>' + val.programme.title + '</h2>')
+						.append('<p class="info">' + val.programme.short_synopsis + '</p>');
 						
 					var filmHeader = filmShelf.find('.film-' + uniqueId + ' h2');
 
@@ -69,9 +70,7 @@ $(function() {
 						filmHeader.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm") + '</time>');
 					else
 						filmHeader.after('<time><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
-
-					//film.append('<p class="info">' + val.programme.short_synopsis + '</p>');
-
+					
 					if(serviceId != 'bbc_hd') {
 						getFilmDetails(filmTitle, uniqueId);
 					}
@@ -83,8 +82,8 @@ $(function() {
 							else if(data.programme.medium_synopsis) synopsis = data.programme.medium_synopsis;
 							else if(data.programme.short_synopsis) synopsis = data.programme.short_synopsis;
 							film.find('a:first')
-								//.append('<p class="info">' + synopsis + '</p>')
-								.html('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />');
+								.html('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />')
+								.append('<p class="info">' + synopsis + '</p>');
 						});
 					}
 				}
@@ -145,6 +144,20 @@ $(function() {
 	$('#clear').click(function() {
 		localStorage.clear();
 		alert('cleared');
+	});
+	
+	var filmDetails = $('<div id="detail" />');
+	
+	$('.film-shelf a.header-img').click(function(ev) {
+		ev.preventDefault();
+		var popupId = $(this).closest('li').attr('data-id');
+		//console.log(popupId);
+		$('li.film-' + popupId).clone().dialog({
+			title: 'Basic Dialog',
+			width: '500',
+			height: '250',
+			modal: true
+		});
 	});
 	
 });

@@ -217,7 +217,7 @@ font-size : 1em; /* 16 / 16 = 1 */ }
 a, 
 a:visited {
 outline : none;
-color: #333;
+color: #386aa8;
 text-decoration : none; }
  
 a:hover { 
@@ -480,7 +480,7 @@ time
 
 .film-shelf .info
 {
-	clear: right;
+	display: none;
 }
 
 h2 a,
@@ -501,12 +501,12 @@ h2 a,
 	width: 133px;
 }
 
-.film-shelf .rating li b
+.rating li b
 {
 	margin: 0 5px;
 }
 
-.film-shelf .rating img
+.rating img
 {
 	border: none;
 	float: none;
@@ -516,7 +516,7 @@ h2 a,
 	z-index: 2;
 }
 
-.film-shelf .rating img.score
+.rating img.score
 {
 	padding: 0 7px;
 	position: absolute;
