@@ -1,0 +1,9 @@
+.film-shelf
+{
+	width: 1382px;
+}
+
+.film-shelf li
+{
+	min-width: 420px;
+}

@@ -1,0 +1,86 @@
+body
+{
+	padding: 10px;
+	width: 98%;
+}
+
+h1
+{
+	font-size: 1em;
+}
+
+h2
+{
+	font-size: 1.3em;
+}
+
+.choice
+{
+	border-bottom: 1px solid #ccc;
+}
+
+.choice li
+{
+	border-top: 1px solid #ccc;
+	min-height: 34px;
+	padding-top: 10px;
+}
+
+.film-shelf
+{
+	width: 480px;
+}
+
+.film-shelf li
+{
+	margin-bottom: 20px;
+	min-width: 480px;
+}
+
+.film-shelf .bbc_one,
+.film-shelf .bbc_two,
+.film-shelf .bbc_three,
+.film-shelf .bbc_four,
+.film-shelf .iplayer,
+.film-shelf .bbc_hd
+{
+	background-position: 405px 10px;
+}
+
+/* Portrait */
+@media screen and (max-width: 320px)
+{
+
+	.film-shelf
+	{
+		width: 320px;
+	}
+
+	.film-shelf li
+	{
+		margin-bottom: 20px;
+		min-width: 320px;
+	}
+
+	.film-shelf h2
+	{
+		padding-top: 40px;
+		padding-right: 0;
+	}
+
+	.film-shelf time
+	{
+		float: none;
+		padding-left: 10px;
+	}
+
+	.film-shelf .bbc_one,
+	.film-shelf .bbc_two,
+	.film-shelf .bbc_three,
+	.film-shelf .bbc_four,
+	.film-shelf .iplayer,
+	.film-shelf .bbc_hd
+	{
+		background-position: 245px 10px;
+	}
+}

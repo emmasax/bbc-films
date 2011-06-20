@@ -1,0 +1,45 @@
+.film-shelf
+{
+	width: 768px;
+}
+
+.film-shelf li
+{
+	margin-bottom: 20px;
+	min-height: 320px;
+	min-width: 372px;
+	width: 372px;
+}
+
+.film-shelf li:nth-child(odd)
+{
+	margin-right: 20px;
+	clear: left;
+}
+
+.film-shelf .bbc_one,
+.film-shelf .bbc_two,
+.film-shelf .bbc_three,
+.film-shelf .bbc_four,
+.film-shelf .iplayer,
+.film-shelf .bbc_hd
+{
+	background-position: 295px 10px;
+}
+
+.film-shelf .rating
+{
+	margin: 0;
+	overflow: hidden;
+}
+
+.film-shelf .rating li
+{
+	padding-bottom: 10px;
+	margin-right: 0;
+}
+
+.film-shelf .rating li span.barchart
+{
+	width: 350px;
+}
