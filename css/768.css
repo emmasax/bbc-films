@@ -12,17 +12,11 @@
 	width: 140px;
 }
 
-.film-shelf li:nth-child(6),
-.film-shelf li:nth-child(11),
-.film-shelf li:nth-child(16),
-.film-shelf li:nth-child(21)
+.film-shelf li:nth-child(5n+1)
 {
 	clear: left;
 }
-.film-shelf li:nth-child(5),
-.film-shelf li:nth-child(10),
-.film-shelf li:nth-child(15),
-.film-shelf li:nth-child(20)
+.film-shelf li:nth-child(5n)
 {
 	margin-right: 0;
 }

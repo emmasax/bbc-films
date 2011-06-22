@@ -1,4 +1,7 @@
 $(function() {
+
+	var ONE_DAY = 60 * 60 * 24 * 1000; // 86,400,000 milliseconds
+	var ONE_SECOND = 1000;
 	
 	var buildFilmCover = function(key, val, pid, name, info) {
 		if(val.critics_consensus)
@@ -66,8 +69,13 @@ $(function() {
 						
 					var filmHeader = filmShelf.find('.film-' + uniqueId + ' h2');
 
-					if(val.start)
-						filmHeader.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm") + '</time>');
+					if(val.start) {
+						var showingAt = $.format.date(val.start, "HH:mm");
+						if(selection != 'today' && selection != 'tomorrow')
+							showingAt = $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm");
+						
+						filmHeader.after('<time>' + showingAt + '</time>');
+					}
 					else
 						filmHeader.after('<time><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
 					
@@ -90,8 +98,11 @@ $(function() {
 				else {
 					// just add in the new time
 					if(val.start) {
+						var showingAt = $.format.date(val.start, "HH:mm");
+						if(selection != 'today' && selection != 'tomorrow')
+							showingAt = $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm");
 						filmShelf.find('.film-' + uniqueId + ' time:last')
-							.after('<time>' + $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm") + '</time>');
+							.after('<time>' + showingAt + '</time>');
 					}
 				}
 			});
@@ -99,18 +110,39 @@ $(function() {
 		}
 	};
 	
+	var updateTimestamp = function() {
+		var currentDate = new Date();
+		localStorage.setItem('timestamp_' + selection, currentDate.getTime());
+	};
+	
+	var fresh = function() {
+		var timestamp = localStorage.getItem('timestamp_' + selection);
+		if(timestamp) {
+			var currentDate = new Date();
+			var currentTime = currentDate.getTime();
+			//console.log('timestamp fresh? ' + ((currentTime - timestamp) < ONE_DAY));
+//			return (currentTime - timestamp) < ONE_SECOND;
+			return (currentTime - timestamp) < ONE_DAY;
+		}
+		else
+			return false;
+	};
+	
 	var getData = function(url, type) {
 		var filmData = localStorage.getItem(selection);
 		
-		if(!filmData) {
+		if(!filmData || !fresh()) {
+			//console.log('getting api');
 			$.getJSON(url, function(data) {
 				filmData = data.broadcasts;
 				if(type == 'episodes') filmData = data.episodes;
 				outputFilmSleeves(filmData);
 				localStorage.setItem(selection, JSON.stringify(filmData));
+				updateTimestamp();
 			});			
 		}
 		else {
+			console.log('using storage');
 			outputFilmSleeves($.parseJSON(filmData));
 		}
 	};
