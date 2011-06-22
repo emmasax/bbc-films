@@ -92,11 +92,21 @@ a:hover
 	color : #444; 
 	text-decoration : underline; 
 }
+
+a:focus 
+{
+	outline: 1px dotted #ccc;
+}
  
 a:active, 
 a:focus 
 { 
 	color : #000; 
+}
+
+a img
+{
+	border: 0;
 }
 
 .clearfix 
@@ -289,50 +299,4 @@ h2 a,
 	padding: 0 7px;
 	position: absolute;
 	z-index: 1;
-}
-
-.film-shelf .bbc_one,
-.film-shelf .bbc_two,
-.film-shelf .bbc_three,
-.film-shelf .bbc_four,
-.film-shelf .iplayer,
-.film-shelf .bbc_hd
-{
-	display: block;
-	background: url(../img/bbcone.gif) no-repeat 99% 10px;
-	background-color: rgba(223, 24, 14, 0.1);
-	border-color: rgb(223, 24, 14);
-}
-
-.film-shelf .bbc_two
-{
-	background-image: url(../img/bbctwo.gif);
-	background-color: rgba(1, 69, 78, 0.1);
-	border-color: #008B8B;
-}
-
-.film-shelf .bbc_three
-{
-	background-image: url(../img/bbcthree.gif);
-	background-color: rgba(68, 14, 56, 0.1);
-	border-color: #BA55D3;
-}
-
-.film-shelf .bbc_four,
-.film-shelf .iplayer,
-.film-shelf .bbc_hd
-{
-	background-image: url(../img/bbcfour.jpg);
-	background-color: #f2f2f2;
-	border-color: #000;
-}
-
-.film-shelf .iplayer
-{
-	background-image: url(../img/iplayer.gif);
-}
-
-.film-shelf .bbc_hd
-{
-	background-image: url(../img/bbchd.png);
 }

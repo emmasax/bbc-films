@@ -8,7 +8,7 @@ $(function() {
 			$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
 
 		$('.film-shelf')
-			.find('.film-' + pid)
+			.find('.film-' + pid + ' div')
 				.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
 				.removeClass('no-img')
 			.find('a:first')
@@ -61,8 +61,8 @@ $(function() {
 
 				if(!filmAlreadyRendered) {
 					listOfIds.push(uniqueId);
-					filmShelf.append('<li class="film-' + uniqueId + ' no-img" data-id="'+val.programme.pid+'"></li>');
-					var film = filmShelf.find('.film-' + uniqueId);
+					filmShelf.append('<li class="film-' + uniqueId + ' no-img"><div class="' + serviceId + '" data-id="'+val.programme.pid+'"></div></li>');
+					var film = filmShelf.find('.film-' + uniqueId + ' div');
 					film.append('<a class="header-img" href="http://bbc.co.uk/programmes/'+val.programme.pid+'"></a>')
 						.append('<h2>' + val.programme.title + '</h2>')
 						.append('<p class="info">' + val.programme.short_synopsis + '</p>');
@@ -178,17 +178,18 @@ $(function() {
 		alert('cleared');
 	});
 	
-	var filmDetails = $('<div id="detail" />');
-	
 	$('.film-shelf a.header-img').click(function(ev) {
 		ev.preventDefault();
-		var popupId = $(this).closest('li').attr('data-id');
-		//console.log(popupId);
-		$('li.film-' + popupId).clone().dialog({
-			title: 'Basic Dialog',
+		var popupId = $(this).closest('li div').attr('data-id');
+
+		var filmPopup = $('li.film-' + popupId + ' div').clone();
+		
+		filmPopup.dialog({
+			title: filmPopup.find('h2'),
 			width: '500',
-			height: '250',
-			modal: true
+			height: '280',
+			modal: true,
+			closeText: 'X'
 		});
 	});
 	
