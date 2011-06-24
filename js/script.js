@@ -1,6 +1,7 @@
 $(function() {
 
-	var ONE_DAY = 60 * 60 * 24 * 1000; // 86,400,000 milliseconds
+	var SIX_HOURS = 60 * 60 * 6 * 1000;
+	var TWELVE_HOURS = 60 * 60 * 12 * 1000;
 	var ONE_SECOND = 1000;
 	
 	var buildFilmCover = function(key, val, pid, name, info) {
@@ -74,10 +75,10 @@ $(function() {
 						if(selection != 'today' && selection != 'tomorrow')
 							showingAt = $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm");
 						
-						filmHeader.after('<time>' + showingAt + '</time>');
+						filmHeader.after('<time class="first">' + showingAt + '</time>');
 					}
 					else
-						filmHeader.after('<time><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
+						filmHeader.after('<time class="first"><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
 					
 					if(serviceId != 'bbc_hd') {
 						getFilmDetails(filmTitle, uniqueId);
@@ -120,9 +121,7 @@ $(function() {
 		if(timestamp) {
 			var currentDate = new Date();
 			var currentTime = currentDate.getTime();
-			//console.log('timestamp fresh? ' + ((currentTime - timestamp) < ONE_DAY));
-//			return (currentTime - timestamp) < ONE_SECOND;
-			return (currentTime - timestamp) < ONE_DAY;
+			return (currentTime - timestamp) < TWELVE_HOURS;
 		}
 		else
 			return false;
@@ -142,7 +141,7 @@ $(function() {
 			});			
 		}
 		else {
-			console.log('using storage');
+			//console.log('using storage');
 			outputFilmSleeves($.parseJSON(filmData));
 		}
 	};
@@ -178,16 +177,15 @@ $(function() {
 		alert('cleared');
 	});
 	
-	$('.film-shelf a.header-img').click(function(ev) {
-		ev.preventDefault();
-		var popupId = $(this).closest('li div').attr('data-id');
-
-		var filmPopup = $('li.film-' + popupId + ' div').clone();
+	$('.film-shelf li').live('click', function(ev) {
+		ev.preventDefault();	
+		var popupId = $(this).closest('li').find('div').attr('data-id');
+		var filmPopup = $('div[data-id=' + popupId + ']').clone();
 		
 		filmPopup.dialog({
 			title: filmPopup.find('h2'),
 			width: '500',
-			height: '280',
+			height: '300',
 			modal: true,
 			closeText: 'X'
 		});

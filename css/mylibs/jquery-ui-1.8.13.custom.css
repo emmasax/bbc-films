@@ -15,9 +15,18 @@
 .ui-dialog .ui-dialog-titlebar { overflow: hidden; }
 .ui-dialog .ui-dialog-title { margin: 0; } 
 .ui-dialog .ui-dialog-titlebar h2 { padding: 5px 0 5px 10px; }
-.ui-dialog .ui-dialog-titlebar-close { color: #fff; font-size: 10px; font-family: arial; position: absolute; top: 5px; right: 10px; }
+.ui-dialog .ui-dialog-titlebar-close 
+{ 
+	color: #fff; 
+	font-size: 10px; 
+	font-family: arial; 
+	padding: 8px 10px;
+	position: absolute; 
+	top: 0; 
+	right: 0; 
+}
 .ui-dialog .ui-dialog-titlebar-close span { display: block; margin: 1px; }
-.ui-dialog .ui-dialog-titlebar-close:hover, .ui-dialog .ui-dialog-titlebar-close:focus { padding: 0; }
+
 .ui-dialog .ui-dialog-content { position: relative; border: 0; overflow: auto; zoom: 1; }
 .ui-dialog .ui-dialog-buttonpane { text-align: left; border-width: 1px 0 0 0; margin: .5em 0 0 0; padding: .3em 1em .5em .4em; }
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { float: right; }
@@ -48,8 +57,13 @@
 
 .ui-dialog-content time
 {
+	font-weight: bold;
 	margin: 0 0 5px;
-	padding-top: 35px;
+}
+
+.ui-dialog-content time.first
+{
+	padding-top: 45px;
 }
 
 .ui-dialog-content h2
@@ -82,7 +96,7 @@
 {
 	background-image: url(../../img/bbcone.gif);
 	background-repeat: no-repeat;
-	background-position: 10px 0;
+	background-position: 10px 5px;
 }
 
 .bbc_two
