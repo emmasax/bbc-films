@@ -20,7 +20,7 @@
 	color: #fff; 
 	font-size: 10px; 
 	font-family: arial; 
-	padding: 8px 10px;
+	padding: 5px 10px 8px;
 	position: absolute; 
 	top: 0; 
 	right: 0; 
@@ -122,4 +122,9 @@
 .bbc_hd
 {
 	background-image: url(../../img/bbchd.gif);
+}
+
+.ui-dialog-content .rating li img.score
+{
+	padding-right: 0;
 }

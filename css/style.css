@@ -18,14 +18,12 @@ html
 body { 
 	margin : 0 auto;
 	padding : 0;
-	width : 760px;
-	color : rgb(40,40,40); 
+	width : 768px;
+	color : #444;
 	background-color : #f2f2f2; 
 	-webkit-text-size-adjust : 100%; 
 	-ms-text-size-adjust : 100%;
 }
-
-/* 2.HEADINGS */
 
 h1, 
 h2
@@ -46,8 +44,6 @@ h2
 	font-size : 1.5em; 
 	line-height : 1.2; 
 }
-
-/* 3.TYPOGRAPHY */
 
 p, 
 ol, 
@@ -167,6 +163,7 @@ header
 	color: #fff;
 	background-color: #333;
 	margin-bottom: 10px;
+	overflow: hidden;
 	padding: 5px;
 }
 
@@ -226,7 +223,13 @@ time
 	clear: left;
 	font-style: normal;
 	margin: 0;
+	overflow: hidden;
 	position: absolute;
+}
+
+.film-shelf
+{
+	padding: 0 4px;
 }
 
 .film-shelf li
@@ -236,6 +239,16 @@ time
 	overflow: hidden;
 	position: relative;
 	margin: 0 0 10px;
+}
+
+.film-shelf li.no-img
+{
+	background: #ddd url(../img/no-poster.gif) no-repeat top left;
+}
+
+.film-shelf li.no-img h2
+{
+	margin-top: 213px;
 }
 
 .film-shelf .info
@@ -272,7 +285,6 @@ h2 a,
 	float: none;
 	margin: 0;
 	position: relative;
-	vertical-align: baseline;
 	z-index: 2;
 }
 

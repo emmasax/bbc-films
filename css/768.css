@@ -1,15 +1,10 @@
-.film-shelf
-{
-	width: 768px;
-}
-
 .film-shelf li
 {
 	margin-bottom: 20px;
-	margin-right: 15px;
+	margin-right: 10px;
 	min-height: 330px;
-	min-width: 140px;
-	width: 140px;
+	min-width: 144px;
+	width: 144px;
 }
 
 .film-shelf li:nth-child(5n+1)
@@ -24,8 +19,8 @@
 .film-shelf li a img
 {
 	display: block;
-	max-width: 140px;
-	min-width: 140px;
+	max-width: 144px;
+	min-width: 144px;
 }
 
 .film-shelf .bbc_one,

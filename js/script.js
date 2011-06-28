@@ -1,5 +1,6 @@
 $(function() {
 
+	var ONE_HOUR = 60 * 60 * 1000;
 	var SIX_HOURS = 60 * 60 * 6 * 1000;
 	var TWELVE_HOURS = 60 * 60 * 12 * 1000;
 	var ONE_SECOND = 1000;
@@ -9,9 +10,10 @@ $(function() {
 			$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
 
 		$('.film-shelf')
-			.find('.film-' + pid + ' div')
+			.find('.film-' + pid)
+				.removeClass('no-img')			
+			.find('div')
 				.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
-				.removeClass('no-img')
 			.find('a:first')
 				.html('<img src="'+val.posters.profile+'" alt="" />')
 			.find('h2')	
@@ -121,7 +123,7 @@ $(function() {
 		if(timestamp) {
 			var currentDate = new Date();
 			var currentTime = currentDate.getTime();
-			return (currentTime - timestamp) < TWELVE_HOURS;
+			return (currentTime - timestamp) < ONE_HOUR;
 		}
 		else
 			return false;
