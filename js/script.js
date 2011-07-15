@@ -8,27 +8,29 @@ $(function() {
 	var buildFilmCover = function(val, pid, name, info) {
 		//console.log(name + ' ' + val.posters.profile);
 
-		if(val.critics_consensus)
-			$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
-
-		$('.film-shelf').find('.film-' + pid).removeClass('no-img')
-			.find('a:first')
-				.html('<img src="'+val.posters.detailed+'" alt="" />')
-			.find('h2')	
-				.append(' <span>('+val.year+')</span>');
-				
-		if(val.ratings.critics_score >= 0) {
-			$('.film-shelf').find('.film-' + pid)
-				.find('div')
-					.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
-		}
-		else {
-			$('.film-shelf').find('.film-' + pid).find('div').append('<p>No review found</p>');
-		}
-
-		if(val.alternate_ids) {
-			$('.film-shelf').find('.film-' + pid + ' .info:last')
-				.after('<p class="info"><a href="http://www.imdb.com/title/tt'+val.alternate_ids.imdb+'">Read more about <i>\''+name+'\'</i> on IMDb</a></p>');
+		if(val) {
+			if(val.critics_consensus)
+				$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
+	
+			$('.film-shelf').find('.film-' + pid).removeClass('no-img')
+				.find('a:first')
+					.html('<img src="'+val.posters.detailed+'" alt="" />')
+				.find('h2')	
+					.append(' <span>('+val.year+')</span>');
+					
+			if(val.ratings.critics_score >= 0) {
+				$('.film-shelf').find('.film-' + pid)
+					.find('div')
+						.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
+			}
+			else {
+				$('.film-shelf').find('.film-' + pid).find('div').append('<p>No review found</p>');
+			}
+	
+			if(val.alternate_ids) {
+				$('.film-shelf').find('.film-' + pid + ' .info:last')
+					.after('<p class="info"><a href="http://www.imdb.com/title/tt'+val.alternate_ids.imdb+'">Read more about <i>\''+name+'\'</i> on IMDb</a></p>');
+			}
 		}
 	};
 	
@@ -203,7 +205,7 @@ $(function() {
 		filmPopup.dialog({
 			title: filmPopup.find('h2'),
 			width: '500',
-			height: '300',
+			height: '350',
 			modal: true,
 			closeText: 'X'
 		});
