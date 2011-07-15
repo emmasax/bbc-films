@@ -6,12 +6,14 @@ $(function() {
 	var ONE_SECOND = 1000;
 	
 	var buildFilmCover = function(val, pid, name, info) {
+		//console.log(name + ' ' + val.posters.profile);
+
 		if(val.critics_consensus)
 			$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
 
 		$('.film-shelf').find('.film-' + pid).removeClass('no-img')
 			.find('a:first')
-				.html('<img src="'+val.posters.profile+'" alt="" />')
+				.html('<img src="'+val.posters.detailed+'" alt="" />')
 			.find('h2')	
 				.append(' <span>('+val.year+')</span>');
 				
@@ -31,6 +33,7 @@ $(function() {
 	};
 	
 	var getFilmDetails = function(name, pid) {
+		//console.log("http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+name);
 		$.ajax({
 			url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+name,
 			dataType: "jsonp",
