@@ -5,19 +5,24 @@ $(function() {
 	var TWELVE_HOURS = 60 * 60 * 12 * 1000;
 	var ONE_SECOND = 1000;
 	
-	var buildFilmCover = function(key, val, pid, name, info) {
+	var buildFilmCover = function(val, pid, name, info) {
 		if(val.critics_consensus)
 			$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
 
-		$('.film-shelf')
-			.find('.film-' + pid)
-				.removeClass('no-img')			
-			.find('div')
-				.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
+		$('.film-shelf').find('.film-' + pid).removeClass('no-img')
 			.find('a:first')
 				.html('<img src="'+val.posters.profile+'" alt="" />')
 			.find('h2')	
 				.append(' <span>('+val.year+')</span>');
+				
+		if(val.ratings.critics_score >= 0) {
+			$('.film-shelf').find('.film-' + pid)
+				.find('div')
+					.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
+		}
+		else {
+			$('.film-shelf').find('.film-' + pid).find('div').append('<p>No review found</p>');
+		}
 
 		if(val.alternate_ids) {
 			$('.film-shelf').find('.film-' + pid + ' .info:last')
@@ -34,10 +39,13 @@ $(function() {
 				var done = false;
 				$.each(data.movies, function(key, val) {
 					if(val.title == name && !done) {
-						buildFilmCover(key, val, pid, name, info);
+						buildFilmCover(val, pid, name, info);
 						done = true;
 					}
 				});
+				if(!done) {
+					buildFilmCover(data.movies[0], pid, name, info);
+				}
 			},
 			error: function() {
 				$('.film-shelf').find('.film-' + pid).append('<p>Couldn\'t find the film info</p>');
@@ -57,7 +65,11 @@ $(function() {
 				var filmTitle = val.programme.title;
 				var uniqueId = val.programme.pid;
 				var serviceId = 'iplayer';
+				var iplayerBBC4 = false;
 				if(val.service) serviceId = val.service.id;
+				if(serviceId == 'iplayer' && val.programme.ownership.service.key == 'bbcfour') {
+					iplayerBBC4 = true;
+				}
 
 				//check id not already used
 				var filmAlreadyRendered = $.inArray(uniqueId, listOfIds) != -1;
@@ -82,7 +94,7 @@ $(function() {
 					else
 						filmHeader.after('<time class="first"><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
 					
-					if(serviceId != 'bbc_hd') {
+					if(serviceId != 'bbc_hd' && !iplayerBBC4) {
 						getFilmDetails(filmTitle, uniqueId);
 					}
 					else {
@@ -92,9 +104,10 @@ $(function() {
 							if(data.programme.long_synopsis) synopsis = data.programme.long_synopsis;
 							else if(data.programme.medium_synopsis) synopsis = data.programme.medium_synopsis;
 							else if(data.programme.short_synopsis) synopsis = data.programme.short_synopsis;
+							film.parent().removeClass('no-img');
 							film.find('a:first')
 								.html('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />')
-								.append('<p class="info">' + synopsis + '</p>');
+								.find('h2').after('<p class="info">' + synopsis + '</p>');
 						});
 					}
 				}
