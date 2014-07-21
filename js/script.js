@@ -6,58 +6,29 @@ $(function() {
 	var ONE_SECOND = 1000;
 	
 	var buildFilmCover = function(val, pid, name, info) {
-		//console.log(name + ' ' + val.posters.profile);
-
 		if(val) {
-			if(val.critics_consensus)
-				$('.film-shelf').find('.film-' + pid + ' .info').after('<p class="info">'+val.critics_consensus+'</p>');
-	
-			$('.film-shelf').find('.film-' + pid).removeClass('no-img')
-				.find('a:first')
-					.html('<img src="'+val.posters.detailed+'" alt="" />')
-				.find('h2')	
-					.append(' <span>('+val.year+')</span>');
-					
 			if(val.ratings.critics_score >= 0) {
-				$('.film-shelf').find('.film-' + pid)
-					.find('div')
-						.append('<ul class="rating"><li><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><img src="img/star-rating.png" height="20" width="140px" /></li><li><b>'+val.ratings.critics_rating+ '</b></li></ul>')
-			}
-			else {
-				$('.film-shelf').find('.film-' + pid).find('div').append('<p>No review found</p>');
-			}
-	
-			if(val.alternate_ids) {
-				$('.film-shelf').find('.film-' + pid + ' .info:last')
-					.after('<p class="info"><a href="http://www.imdb.com/title/tt'+val.alternate_ids.imdb+'">Read more about <i>\''+name+'\'</i> on IMDb</a></p>');
+				$('.film-shelf').find('.film-' + pid).find('.details')
+					.append('<div class="rating"><img class="score" src="img/bar.png" height="20" width="' + val.ratings.critics_score + '%" /><p class="critic">'+val.ratings.critics_score + '% ' + val.ratings.critics_rating+ '</p></div>')
 			}
 		}
 	};
 	
-	var getFilmDetails = function(name, pid) {
-		//console.log("http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+name);
+	var getReview = function(name, pid) {
 		$.ajax({
-			url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+name,
+			url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=" + rottenTomsKey + "&q="+encodeURIComponent(name) + "&page_limit=10&page=1",
 			dataType: "jsonp",
 			success: function(data) {
 				var info = '';
 				var done = false;
-				$.each(data.movies, function(key, val) {
-					if(val.title == name && !done) {
-						buildFilmCover(val, pid, name, info);
-						done = true;
-					}
-				});
-				if(!done) {
-					buildFilmCover(data.movies[0], pid, name, info);
-				}
+				buildFilmCover(data.movies[0], pid, name, info);
 			},
 			error: function() {
-				$('.film-shelf').find('.film-' + pid).append('<p>Couldn\'t find the film info</p>');
+				$('.film-shelf').find('.film-' + pid).append('<p>Couldn\'t find the review</p>');
 			}
 		});
 	};	
-	
+
 	var outputFilmSleeves = function(data, type) {
 		if(data.length == 0) {
 			$('div[role=main]').append('<p class="film-shelf">No films</p>');
@@ -81,47 +52,53 @@ $(function() {
 
 				if(!filmAlreadyRendered) {
 					listOfIds.push(uniqueId);
-					filmShelf.append('<li class="film-' + uniqueId + ' no-img"><div class="' + serviceId + '" data-id="'+val.programme.pid+'"></div></li>');
-					var film = filmShelf.find('.film-' + uniqueId + ' div');
-					film.append('<a class="header-img" href="http://bbc.co.uk/programmes/'+val.programme.pid+'"></a>')
-						.append('<h2>' + val.programme.title + '</h2>')
-						.append('<p class="info">' + val.programme.short_synopsis + '</p>');
-						
-					var filmHeader = filmShelf.find('.film-' + uniqueId + ' h2');
+
+					filmShelf.append('<li class="film film-' + uniqueId + ' no-img"></li>');
+					var film = filmShelf.find('.film-' + uniqueId);
+					film.append('<a class="header-img" href="http://bbc.co.uk/programmes/'+val.programme.pid+'"><img class="channel" src="img/'+serviceId+'.png" width="64" alt="'+val.programme.ownership.service.title+'" /></a><div class="details"></div>');
+          
+          var details = film.find('.details');
+          
+          details.append('<h2>' + val.programme.title + '</h2>');
 
 					if(val.start) {
 						var showingAt = $.format.date(val.start, "HH:mm");
-						if(selection != 'today' && selection != 'tomorrow')
-							showingAt = $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm");
-						
-						filmHeader.after('<time class="first">' + showingAt + '</time>');
-					}
-					else
-						filmHeader.after('<time class="first"><a href="http://bbc.co.uk/programmes/' + val.programme.pid + '"><b>Watch now</b></a> (' + val.programme.media.availability + ')</time>');
-					
-					if(serviceId != 'bbc_hd' && !iplayerBBC4) {
-						getFilmDetails(filmTitle, uniqueId);
+						if(selection != 'today' && selection != 'tomorrow') {
+							showingAt = $.format.date(val.start, "HH:mm") + " - " + $.format.date(val.start, "D MMMM yyyy");
+						}						
+						film.find('.header-img').append('<p class="time"><time class="first">' + showingAt + '</time></p>');
 					}
 					else {
-						// get bbc hd film info
-						$.getJSON("http://www.bbc.co.uk/programmes/"+uniqueId+".json", function(data) {
-							var synopsis;
-							if(data.programme.long_synopsis) synopsis = data.programme.long_synopsis;
-							else if(data.programme.medium_synopsis) synopsis = data.programme.medium_synopsis;
-							else if(data.programme.short_synopsis) synopsis = data.programme.short_synopsis;
-							film.parent().removeClass('no-img');
-							film.find('a:first')
-								.html('<img src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="210px" />')
-								.find('h2').after('<p class="info">' + synopsis + '</p>');
-						});
+						film.find('.header-img').append('<p class="time"><time class="first">Watch now (' + val.programme.media.availability + ')</time></p>');
 					}
+					
+					$.getJSON("http://www.bbc.co.uk/programmes/"+uniqueId+".json", function(data) {
+						var synopsis = data.programme.short_synopsis;
+						details.parent().removeClass('no-img');
+						film.find('a:first')
+							.prepend('<img class="hero" src="http://www.bbc.co.uk/iplayer/images/episode/' + uniqueId + '_640_360.jpg" alt="" width="320" />');
+            details.append('<p class="synopsis">' + synopsis + '</p>');
+            
+            // Related links
+            // if(data.programme.links.length > 0) {
+            //   details.append('<ul class="related"></ul>');
+            //   $.each(data.programme.links, function(key, val) {
+            //     if((val.title).indexOf(data.programme.title) != -1) {
+            //       details.find('.related').append('<li><a href="'+val.url+'">'+val.title+'</a></li>');
+            //     }
+            //   });
+            // }
+            
+					});
+          
+          getReview(val.programme.title, uniqueId)
 				}
 				else {
 					// just add in the new time
 					if(val.start) {
 						var showingAt = $.format.date(val.start, "HH:mm");
 						if(selection != 'today' && selection != 'tomorrow')
-							showingAt = $.format.date(val.start, "dd MMM yyyy") + ' at ' + $.format.date(val.start, "HH:mm");
+							showingAt = $.format.date(val.start, "HH:mm") + " - " + $.format.date(val.start, "dd MMM yyyy");
 						filmShelf.find('.film-' + uniqueId + ' time:last')
 							.after('<time>' + showingAt + '</time>');
 					}
@@ -150,20 +127,18 @@ $(function() {
 	var getData = function(url, type) {
 		var filmData = localStorage.getItem(selection);
 		
-		if(!filmData || !fresh()) {
-			//console.log('getting api');
-			$.getJSON(url, function(data) {
-				filmData = data.broadcasts;
-				if(type == 'episodes') filmData = data.episodes;
-				outputFilmSleeves(filmData);
-				localStorage.setItem(selection, JSON.stringify(filmData));
-				updateTimestamp();
-			});			
-		}
-		else {
-			//console.log('using storage');
-			outputFilmSleeves($.parseJSON(filmData));
-		}
+    // if(!filmData || !fresh()) {
+		$.getJSON(url, function(data) {
+			filmData = data.broadcasts;
+			if(type == 'episodes') filmData = data.episodes;
+			outputFilmSleeves(filmData);
+			localStorage.setItem(selection, JSON.stringify(filmData));
+			updateTimestamp();
+		});			
+    // }
+    // else {
+    //   outputFilmSleeves($.parseJSON(filmData));
+    // }
 	};
 
 	//var selection = $('header option:selected').val();
@@ -195,20 +170,6 @@ $(function() {
 	$('#clear').click(function() {
 		localStorage.clear();
 		alert('cleared');
-	});
-	
-	$('.film-shelf li').live('click', function(ev) {
-		ev.preventDefault();	
-		var popupId = $(this).closest('li').find('div').attr('data-id');
-		var filmPopup = $('div[data-id=' + popupId + ']').clone();
-		
-		filmPopup.dialog({
-			title: filmPopup.find('h2'),
-			width: '500',
-			height: '350',
-			modal: true,
-			closeText: 'X'
-		});
 	});
 	
 });
